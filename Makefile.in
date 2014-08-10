@@ -1,0 +1,45 @@
+CXX=@CXX@
+CXXFLAGS=@CXXFLAGS@
+LDFLAGS=@LDFLAGS@
+LD=@LD@
+BISON=@BISON@
+FLEX=@FLEX@
+
+all: Makefile flexbisoncpp
+
+flexbisoncpp: Parser.cpp Scanner.cpp Driver.cpp main.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+Scanner.cpp: scanner.ll
+	$(FLEX) -o Scanner.cpp --header-file=Scanner.hpp -Ce scanner.ll
+
+Parser.cpp: parser.yy
+	$(BISON) -o Parser.cpp --defines=Parser.hpp -dv parser.yy
+
+Driver.cpp: Driver.hpp Parser.hpp Scanner.hpp ScannerImpl.hpp
+
+Parser.cpp: parser.yy
+
+Scanner.cpp: scanner.ll
+
+ScannerImpl.hpp: Parser.hpp Scanner.hpp
+
+
+parser.ll: Driver.hpp Parser.hpp
+
+clean:
+	-find . -type -f "*.o" -delete
+	-rm Parser.[hc]pp Scanner.[ch]pp
+	-rm stack.hh location.hh position.hh
+
+distclean:
+	-rm -rf autom4te.cache
+	-rm config.log config.status configure Makefile
+	autoreconf
+	./configure
+
+Makefile: Makefile.in
+	./configure
+
+configure: configure.ac
+	autoreconf
