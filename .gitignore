@@ -4,13 +4,12 @@ flexbisoncpp
 autom4te.cache
 config.log
 config.status
-configure
 location.hh
 stack.hh
 position.hh
-Makefile
 Scanner.hpp
 Scanner.cpp
 Parser.output
 Parser.hpp
 Parser.cpp
+Makefile
